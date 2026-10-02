@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name         CashMag – HubSpot Timeline
 @namespace    cashmag.eu
-@version      1.4.0
+@version      1.5.1
 @description  Couleurs des activités par type, statut en retard / à venir / passé, transactions, encours client, boutons d'action, focus clavier
 @author       Séb – CashMag
 @license      Usage interne CashMag
@@ -23,6 +23,7 @@
     --hs-alert:        #c62828; /* Alertes : badge « ! », encours client */
     --hs-focus:        #2f6fb3; /* Contour de focus clavier */
     --hs-upcoming:     #2f6fb3; /* Titre de section « À venir » */
+    --hs-won:          #3a8a5c; /* Transaction gagnée / contrat signé */
     --hs-past-opacity: .85;     /* Atténuation des activités passées (1 = aucune) */
   }
 
@@ -179,5 +180,20 @@
   [data-selenium-test^="create-queue-button"] {
     display: none !important;
     pointer-events: none !important;
+  }
+
+  /* ---------- 11. TRANSACTIONS ASSOCIÉES : fond vert pâle si gagnée ---------- */
+  /* Repère : pastille verte HubSpot (étape « gagnée ») ou identifiant d'étape connu.
+     Won = 6012505297 · Contrat signé / paiement = 5593193683 */
+  [data-test-id^="associated-objects-card-content"] [data-selenium-test="chicklet"]:has(
+    [data-selenium-test="deal-chicklet-stage-select"] :is(
+      [data-test-color="fill-accent-green-default"],
+      [data-option-value="6012505297"],
+      [data-option-value="5593193683"]
+    )
+  ) {
+    background: color-mix(in srgb, var(--hs-won) 10%, white) !important;
+    border-color: var(--hs-won) !important;
+    box-shadow: inset 4px 0 0 var(--hs-won) !important;
   }
 }
