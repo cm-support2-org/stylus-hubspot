@@ -5,7 +5,7 @@
 @description  Couleurs des activités par type, statut en retard / à venir / passé, transactions et encours client
 @author       Séb – CashMag
 @license      Usage interne CashMag
-@updateURL    https://REMPLACER-PAR-TON-URL/cashmag-hubspot.user.css
+@updateURL    https://raw.githubusercontent.com/cm-support2-org/stylus-hubspot/main/cashmag-hubspot.user.css
 ==/UserStyle== */
 
 @-moz-document domain("hubspot.com") {
