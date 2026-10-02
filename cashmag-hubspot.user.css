@@ -1,8 +1,8 @@
 /* ==UserStyle==
 @name         CashMag – HubSpot Timeline
 @namespace    cashmag.eu
-@version      1.1.0
-@description  Couleurs des activités par type, statut en retard / à venir / passé, transactions et encours client
+@version      1.4.0
+@description  Couleurs des activités par type, statut en retard / à venir / passé, transactions, encours client, boutons d'action, focus clavier
 @author       Séb – CashMag
 @license      Usage interne CashMag
 @updateURL    https://raw.githubusercontent.com/cm-support2-org/stylus-hubspot/main/cashmag-hubspot.user.css
@@ -14,12 +14,15 @@
      Réglages : couleurs, badge et atténuation
      ========================================================= */
   :root {
-    --hs-task-b:       #f5a623; /* Tâche : orange */
-    --hs-call-b:       #1e88e5; /* Appel + appel consigné : bleu */
-    --hs-meeting-b:    #43a047; /* Réunion : vert */
-    --hs-email-b:      #8e24aa; /* Email consigné : violet */
-    --hs-deal-b:       #e53935; /* Transaction : rouge */
-    --hs-alert:        #e53935; /* Badge « ! » en retard */
+    /* Palette sobre (tons légèrement désaturés pour un usage quotidien) */
+    --hs-task-b:       #d4882b; /* Tâche : ambre */
+    --hs-call-b:       #2f6fb3; /* Appel + appel consigné : bleu acier */
+    --hs-meeting-b:    #3a8a5c; /* Réunion : vert sauge */
+    --hs-email-b:      #7a52a8; /* Email consigné : violet doux */
+    --hs-deal-b:       #c0392b; /* Transaction : rouge brique */
+    --hs-alert:        #c62828; /* Alertes : badge « ! », encours client */
+    --hs-focus:        #2f6fb3; /* Contour de focus clavier */
+    --hs-upcoming:     #2f6fb3; /* Titre de section « À venir » */
     --hs-past-opacity: .85;     /* Atténuation des activités passées (1 = aucune) */
   }
 
@@ -83,8 +86,8 @@
     animation: hs-blink 1.2s ease-in-out infinite;
   }
   @keyframes hs-blink {
-    0%, 100% { opacity: 1;   transform: scale(1);    box-shadow: 0 0 0 2px #fff, 0 0 0 0   rgba(229,57,53,.6); }
-    50%      { opacity: .35; transform: scale(1.15); box-shadow: 0 0 0 2px #fff, 0 0 0 6px rgba(229,57,53,0); }
+    0%, 100% { opacity: 1;   transform: scale(1);    box-shadow: 0 0 0 2px #fff, 0 0 0 0   color-mix(in srgb, var(--hs-alert) 60%, transparent); }
+    50%      { opacity: .35; transform: scale(1.15); box-shadow: 0 0 0 2px #fff, 0 0 0 6px transparent; }
   }
   @media (prefers-reduced-motion: reduce) {
     div:has(> p > [data-key="crmEventsVizTimeline.overdueEvents"]) + section
@@ -97,22 +100,22 @@
   [data-event-type*="deal" i] [class*="ShadowContainer"] > article {
     border: 3px solid var(--hs-deal-b) !important;
     border-left-width: 8px !important;
-    background: #fff1f0 !important;
-    box-shadow: 0 0 0 3px rgba(229, 57, 53, .15) !important;
+    background: color-mix(in srgb, var(--hs-deal-b) 7%, white) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--hs-deal-b) 15%, transparent) !important;
     opacity: 1;
   }
 
   /* ---------- 6. ENCOURS CLIENT : en rouge s'il est rempli ---------- */
   [data-test-id="gomc_enct_encours"]:has([data-selenium-test="currency-component-loaded"])
     > [data-deferred-property-input-root] {
-    background: #ffebee !important;
-    border-left: 5px solid #e53935 !important;
+    background: color-mix(in srgb, var(--hs-alert) 8%, white) !important;
+    border-left: 5px solid var(--hs-alert) !important;
     border-radius: 6px;
     padding: 4px 8px !important;
   }
   [data-test-id="gomc_enct_encours"] [data-selenium-test="currency-component-loaded"] {
     font-weight: 700 !important;
-    color: #c62828 !important;
+    color: var(--hs-alert) !important;
   }
 
   /* ---------- 7. BOUTONS D'ACTION (en-tête de fiche) : mêmes couleurs ---------- */
@@ -129,6 +132,12 @@
     background: color-mix(in srgb, var(--hs-c) 12%, white) !important;
     transition: background .15s;
   }
+  /* Neutralise le fond propre à HubSpot à l'intérieur du cercle (bug du survol) */
+  [data-onboarding="create-activity-buttons"] [role="list"] > :is(:nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5))
+    [tabindex="0"] > :has(svg) * {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
   /* Icône colorée */
   [data-onboarding="create-activity-buttons"] [role="list"] > :is(:nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5))
     svg {
@@ -144,5 +153,31 @@
     [tabindex="0"]:hover svg {
     color: #fff !important;
     fill: #fff !important;
+  }
+
+  /* ---------- 8. FOCUS CLAVIER visible (navigation Tab uniquement) ---------- */
+  :is(a, button, input, select, textarea, [role="button"], [role="tab"], [role="link"], [tabindex]):focus-visible {
+    outline: 2px solid var(--hs-focus) !important;
+    outline-offset: 2px !important;
+  }
+
+  /* ---------- 9. TITRES DE SECTION de la timeline ---------- */
+  div:has(> p > [data-key="crmEventsVizTimeline.overdueEvents"]) > p {
+    color: var(--hs-alert) !important;
+    font-weight: 700 !important;
+  }
+  div:has(> p > [data-key="crmEventsVizTimeline.upcomingEvents"]) > p {
+    color: var(--hs-upcoming) !important;
+    font-weight: 600 !important;
+  }
+
+  /* ---------- 10. FILES D'ATTENTE : bouton « Créer une file d'attente » masqué et désactivé ---------- */
+  /* Garde-fou visuel uniquement : le vrai blocage se fait via les droits utilisateurs HubSpot */
+  [data-dropdown-footer]:has(> [data-selenium-test^="create-queue-button"]) {
+    display: none !important;
+  }
+  [data-selenium-test^="create-queue-button"] {
+    display: none !important;
+    pointer-events: none !important;
   }
 }
