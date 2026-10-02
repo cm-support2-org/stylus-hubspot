@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name         CashMag – HubSpot Timeline
 @namespace    cashmag.eu
-@version      1.0.0
+@version      1.1.0
 @description  Couleurs des activités par type, statut en retard / à venir / passé, transactions et encours client
 @author       Séb – CashMag
 @license      Usage interne CashMag
@@ -113,5 +113,36 @@
   [data-test-id="gomc_enct_encours"] [data-selenium-test="currency-component-loaded"] {
     font-weight: 700 !important;
     color: #c62828 !important;
+  }
+
+  /* ---------- 7. BOUTONS D'ACTION (en-tête de fiche) : mêmes couleurs ---------- */
+  /* Ordre HubSpot : 1 Note · 2 E-mail · 3 Appel · 4 Tâche · 5 Réunion · 6 Plus */
+  [data-onboarding="create-activity-buttons"] [role="list"] > :nth-child(2) { --hs-c: var(--hs-email-b); }
+  [data-onboarding="create-activity-buttons"] [role="list"] > :nth-child(3) { --hs-c: var(--hs-call-b); }
+  [data-onboarding="create-activity-buttons"] [role="list"] > :nth-child(4) { --hs-c: var(--hs-task-b); }
+  [data-onboarding="create-activity-buttons"] [role="list"] > :nth-child(5) { --hs-c: var(--hs-meeting-b); }
+
+  /* Cercle : contour coloré + fond légèrement teinté */
+  [data-onboarding="create-activity-buttons"] [role="list"] > :is(:nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5))
+    [tabindex="0"] > :has(svg) {
+    border-color: var(--hs-c) !important;
+    background: color-mix(in srgb, var(--hs-c) 12%, white) !important;
+    transition: background .15s;
+  }
+  /* Icône colorée */
+  [data-onboarding="create-activity-buttons"] [role="list"] > :is(:nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5))
+    svg {
+    color: var(--hs-c) !important;
+    fill: var(--hs-c) !important;
+  }
+  /* Survol : cercle plein, icône blanche */
+  [data-onboarding="create-activity-buttons"] [role="list"] > :is(:nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5))
+    [tabindex="0"]:hover > :has(svg) {
+    background: var(--hs-c) !important;
+  }
+  [data-onboarding="create-activity-buttons"] [role="list"] > :is(:nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5))
+    [tabindex="0"]:hover svg {
+    color: #fff !important;
+    fill: #fff !important;
   }
 }
