@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name         CashMag – HubSpot Timeline
 @namespace    cashmag.eu
-@version      1.5.1
+@version      1.6.1
 @description  Couleurs des activités par type, statut en retard / à venir / passé, transactions, encours client, boutons d'action, focus clavier
 @author       Séb – CashMag
 @license      Usage interne CashMag
@@ -24,6 +24,8 @@
     --hs-focus:        #2f6fb3; /* Contour de focus clavier */
     --hs-upcoming:     #2f6fb3; /* Titre de section « À venir » */
     --hs-won:          #3a8a5c; /* Transaction gagnée / contrat signé */
+    --hs-bg-entreprise: #eaf2fb; /* Fond fiche « Entreprise principale » : bleu pâle */
+    --hs-bg-magasin:    #ebf6ef; /* Fond fiche « Magasin » : vert pâle */
     --hs-past-opacity: .85;     /* Atténuation des activités passées (1 = aucune) */
   }
 
@@ -195,5 +197,27 @@
     background: color-mix(in srgb, var(--hs-won) 10%, white) !important;
     border-color: var(--hs-won) !important;
     box-shadow: inset 4px 0 0 var(--hs-won) !important;
+  }
+
+  /* ---------- 12. FOND DE PAGE selon le « Type de fiche » de l'entreprise ---------- */
+  /* Repère : couleur du badge HubSpot de la propriété type_de_fiche (panneau de gauche)
+     badge-calypso = Entreprise principale (Tiers) · badge-oz = Magasin */
+  body:has([data-test-id="type_de_fiche"] [data-selenium-test="property-input-type_de_fiche"] [data-tag-use="badge-calypso"])
+    :is([data-selenium-test="universal-record"],
+        [data-transitional-component="ColumnSpreads"],
+        [data-crm-location^="CRM_RECORD"],
+        [data-scroll-container*="CRM_RECORD"],
+        [data-selenium-test^="cardLocation"],
+        #record-page-middle-pane) {
+    background: var(--hs-bg-entreprise) !important;
+  }
+  body:has([data-test-id="type_de_fiche"] [data-selenium-test="property-input-type_de_fiche"] [data-tag-use="badge-oz"])
+    :is([data-selenium-test="universal-record"],
+        [data-transitional-component="ColumnSpreads"],
+        [data-crm-location^="CRM_RECORD"],
+        [data-scroll-container*="CRM_RECORD"],
+        [data-selenium-test^="cardLocation"],
+        #record-page-middle-pane) {
+    background: var(--hs-bg-magasin) !important;
   }
 }
