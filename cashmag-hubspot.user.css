@@ -1,0 +1,117 @@
+/* ==UserStyle==
+@name         CashMag – HubSpot Timeline
+@namespace    cashmag.eu
+@version      1.0.0
+@description  Couleurs des activités par type, statut en retard / à venir / passé, transactions et encours client
+@author       Séb – CashMag
+@license      Usage interne CashMag
+@updateURL    https://REMPLACER-PAR-TON-URL/cashmag-hubspot.user.css
+==/UserStyle== */
+
+@-moz-document domain("hubspot.com") {
+
+  /* =========================================================
+     Réglages : couleurs, badge et atténuation
+     ========================================================= */
+  :root {
+    --hs-task-b:       #f5a623; /* Tâche : orange */
+    --hs-call-b:       #1e88e5; /* Appel + appel consigné : bleu */
+    --hs-meeting-b:    #43a047; /* Réunion : vert */
+    --hs-email-b:      #8e24aa; /* Email consigné : violet */
+    --hs-deal-b:       #e53935; /* Transaction : rouge */
+    --hs-alert:        #e53935; /* Badge « ! » en retard */
+    --hs-past-opacity: .85;     /* Atténuation des activités passées (1 = aucune) */
+  }
+
+  /* ---------- 1. Couleur selon le type d'activité ---------- */
+  [data-selenium-event-type="TASK"]       { --hs-c: var(--hs-task-b); }
+  [data-selenium-event-type*="CALL" i]    { --hs-c: var(--hs-call-b); }
+  [data-selenium-event-type*="MEETING" i] { --hs-c: var(--hs-meeting-b); }
+  [data-selenium-event-type*="EMAIL" i]   { --hs-c: var(--hs-email-b); }
+  [data-event-type*="deal" i]             { --hs-c: var(--hs-deal-b); }
+
+  /* ---------- 2. PASSÉ (par défaut) : trait à gauche, légèrement atténué ---------- */
+  :is([data-selenium-event-type="TASK"],
+      [data-selenium-event-type*="CALL" i],
+      [data-selenium-event-type*="MEETING" i],
+      [data-selenium-event-type*="EMAIL" i],
+      [data-event-type*="deal" i])
+    [class*="ShadowContainer"] > article {
+    border-left: 5px solid var(--hs-c) !important;
+    opacity: var(--hs-past-opacity);
+    transition: opacity .15s;
+  }
+  :is([data-selenium-event-type="TASK"],
+      [data-selenium-event-type*="CALL" i],
+      [data-selenium-event-type*="MEETING" i],
+      [data-selenium-event-type*="EMAIL" i],
+      [data-event-type*="deal" i])
+    [class*="ShadowContainer"] > article:hover {
+    opacity: 1;
+  }
+
+  /* ---------- 3. À VENIR : contour en pointillés ---------- */
+  div:has(> p > [data-key="crmEventsVizTimeline.upcomingEvents"]) + section
+    [data-selenium-test="timeline-card"] [class*="ShadowContainer"] > article {
+    border: 2px dashed var(--hs-c) !important;
+    border-left: 5px solid var(--hs-c) !important;
+    opacity: 1;
+  }
+
+  /* ---------- 4. EN RETARD : contour épais, fond teinté, badge « ! » clignotant ---------- */
+  div:has(> p > [data-key="crmEventsVizTimeline.overdueEvents"]) + section
+    [data-selenium-test="timeline-card"] [class*="ShadowContainer"] > article {
+    border: 3px solid var(--hs-c) !important;
+    border-left-width: 8px !important;
+    background: color-mix(in srgb, var(--hs-c) 10%, white) !important;
+    opacity: 1;
+    position: relative;
+  }
+  div:has(> p > [data-key="crmEventsVizTimeline.overdueEvents"]) + section
+    [data-selenium-test="timeline-card"] [class*="ShadowContainer"] > article::after {
+    content: "!";
+    position: absolute;
+    top: -9px; left: -9px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--hs-alert);
+    color: #fff;
+    font: 700 13px/20px sans-serif;
+    text-align: center;
+    box-shadow: 0 0 0 2px #fff;
+    z-index: 2;
+    animation: hs-blink 1.2s ease-in-out infinite;
+  }
+  @keyframes hs-blink {
+    0%, 100% { opacity: 1;   transform: scale(1);    box-shadow: 0 0 0 2px #fff, 0 0 0 0   rgba(229,57,53,.6); }
+    50%      { opacity: .35; transform: scale(1.15); box-shadow: 0 0 0 2px #fff, 0 0 0 6px rgba(229,57,53,0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    div:has(> p > [data-key="crmEventsVizTimeline.overdueEvents"]) + section
+      [data-selenium-test="timeline-card"] [class*="ShadowContainer"] > article::after {
+      animation: none;
+    }
+  }
+
+  /* ---------- 5. TRANSACTIONS : toujours bien visibles ---------- */
+  [data-event-type*="deal" i] [class*="ShadowContainer"] > article {
+    border: 3px solid var(--hs-deal-b) !important;
+    border-left-width: 8px !important;
+    background: #fff1f0 !important;
+    box-shadow: 0 0 0 3px rgba(229, 57, 53, .15) !important;
+    opacity: 1;
+  }
+
+  /* ---------- 6. ENCOURS CLIENT : en rouge s'il est rempli ---------- */
+  [data-test-id="gomc_enct_encours"]:has([data-selenium-test="currency-component-loaded"])
+    > [data-deferred-property-input-root] {
+    background: #ffebee !important;
+    border-left: 5px solid #e53935 !important;
+    border-radius: 6px;
+    padding: 4px 8px !important;
+  }
+  [data-test-id="gomc_enct_encours"] [data-selenium-test="currency-component-loaded"] {
+    font-weight: 700 !important;
+    color: #c62828 !important;
+  }
+}
